@@ -1,0 +1,39 @@
+<view class="container">
+
+  <view class="header">
+    <view class="header-title"> 转盘抽奖源码体验 </view>
+    <view class="header-subtitle"> 点击抽奖获得红包 </view>
+  </view>
+
+  <view class="main">
+    <view class="canvas-container">
+      <!-- 旋转区域 -->
+      <view  animation="{{animationData}}" class="canvas-content" >
+        <!-- 分割线盒子 -->
+        <view class="canvas-line">
+          <!-- 分割线 -->
+          <view
+            class="canvas-litem"
+            wx:for="{{awardsList}}"
+            wx:key="unique"
+            style="transform: rotate({{ item.lineTurn }})"></view>
+        </view>
+        <!-- 奖品盒子 -->
+        <view class="canvas-list">
+          <!-- 各个奖品类型 -->
+          <view class="canvas-item" wx:for="{{awardsList}}" wx:key="unique">
+            <!-- 单个奖品 -->
+            <view
+              class="canvas-item-text"
+              style="-webkit-transform: rotate({{item.turn}});transform: rotate({{item.turn}})">
+              <view>{{item.award}}</view>
+              <image class="img" src="{{ './' + (index + 1) + '.png' }}"></image>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view bindtap="playReward" class="canvas-btn {{btnDisabled}}">抽奖</view>
+    </view>
+  </view>
+</view>
