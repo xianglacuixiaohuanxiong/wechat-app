@@ -1,0 +1,24 @@
+.page-state-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.page-state-container {
+  animation: fadein 2s 1 ease-out;
+  height: 100%;
+  width: 100%;
+}
+
+.page-state-container~view {
+  display: none;
+}
+
+page {
+  height: 100%;
+  overflow-y: auto;
+}

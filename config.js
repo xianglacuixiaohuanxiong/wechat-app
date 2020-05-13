@@ -6,7 +6,7 @@ try {
   fileManager.accessSync('local.text');
   NODE_ENV = 'dev';
   console.log('开发环境');
-  host = 'https://api.apiopen.top/';
+  host = 'https://yaodzl.zsweiman.com';
 } catch (e) {
   if (NODE_ENV === 'pro') {
     console.log('生产环境');

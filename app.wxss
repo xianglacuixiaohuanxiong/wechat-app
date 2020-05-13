@@ -1,3 +1,4 @@
+@import 'common/pageStatus/index.wxss';
 .chrray-main {padding: 0 30rpx;}
 /* 盒子属性 */
 .bs {box-sizing: border-box}
