@@ -1,5 +1,8 @@
 //app.js
 import { login } from "utils/login";
+import AUTH from 'utils/auth';
+const WXAPI = require('apifm-wxapi')
+WXAPI.init('gooking')
 App({
   onLaunch: function () {
     // 展示本地存储能力
@@ -36,26 +39,24 @@ App({
         this.userInfoReadyCallback(res)
       }
     });
-    // 获取用户信息
-    // wx.getSetting({
-    //   success: res => {
-    //     if (res.authSetting['scope.userInfo']) {
-    //       // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-    //       wx.getUserInfo({
-    //         success: res => {
-    //           // 可以将 res 发送给后台解码出 unionId
-    //           this.globalData.userInfo = res.userInfo
-    //
-    //           // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-    //           // 所以此处加入 callback 以防止这种情况
-    //           if (this.userInfoReadyCallback) {
-    //             this.userInfoReadyCallback(res)
-    //           }
-    //         }
-    //       })
-    //     }
-    //   }
-    // })
+    //  自动登录
+    AUTH.checkHasLogined().then(async isLogined => {
+      if (!isLogined) {
+        AUTH.login()
+      } else {
+        AUTH.getUserInfo().then((res) => {
+          const { userInfo } = res
+          // 更新用户信息
+          WXAPI.modifyUserInfo({
+            avatarUrl: userInfo.avatarUrl,
+            city: userInfo.city,
+            nick: userInfo.nickName,
+            province: userInfo.province,
+            token: wx.getStorageSync('token')
+          })
+        })
+      }
+    })
   },
   globalData: {
     userInfo: null,
