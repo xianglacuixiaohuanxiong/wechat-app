@@ -1,134 +1,147 @@
-const WXAPI = require('apifm-wxapi')
-WXAPI.init('gooking')
-//  检查登录状态是否过期
-async function checkSession(){
-  return new Promise((resolve, reject) => {
-    wx.checkSession({
-      success() {
-        return resolve(true)
-      },
-      fail() {
-        return resolve(false)
-      }
+let app = getApp().globalData;
+console.log(app)
+import api from '../api/login'
+function showModal(title, content) {
+  wx.showModal({
+    title: title,
+    content: content.toString(),
+    showCancel: false
+  })
+}
+// 弹出loading
+function showLoading(title) {
+  wx.showLoading({
+    title: title,
+    mask: true
+  })
+}
+//  获取页面配置
+function indexConfig () {
+  const that = this;
+  if (app.hasConfig) {
+    this.setData({
+      audit: app.audit,
+      advert: app.advert,
     })
-  })
+  }
 }
-
-// 检测登录状态，返回 true / false
-async function checkHasLogined() {
-  const token = wx.getStorageSync('token')
-  if (!token) {
-    return false
-  }
-  const loggined = await checkSession()
-  if (!loggined) {
-    wx.removeStorageSync('token')
-    return false
-  }
-  const checkTokenRes = await WXAPI.checkToken(token)
-  if (checkTokenRes.code != 0) {
-    wx.removeStorageSync('token')
-    return false
-  }
-  return true
-}
-
-//  获取微信code
-async function wxaCode(){
+//  判断授权并根据授权返回相应的状态
+function login(flag) {
   return new Promise((resolve, reject) => {
-    wx.login({
-      success(res) {
-        return resolve(res.code)
-      },
-      fail() {
-        wx.showToast({
-          title: '获取code失败',
-          icon: 'none'
-        })
-        return resolve('获取code失败')
-      }
-    })
-  })
-}
-
-//  获取用户信息
-async function getUserInfo() {
-  return new Promise((resolve, reject) => {
-    wx.getUserInfo({
-      success: res => {
-        return resolve(res)
-      },
-      fail: err => {
-        console.error(err)
-        return resolve()
-      }
-    })
-  })
-}
-
-//  登录
-async function login(page){
-  const _this = this
-  wx.login({
-    success: function (res) {
-      WXAPI.login_wx(res.code).then(function (res) {
-        if (res.code == 10000) {
-          // 去注册
-          _this.register(page)
-          return;
-        }
-        if (res.code != 0) {
-          // 登录错误
-          wx.showModal({
-            title: '无法登录',
-            content: res.msg,
-            showCancel: false
-          })
-          return;
-        }
-        wx.setStorageSync('token', res.data.token)
-        wx.setStorageSync('uid', res.data.uid)
-        if ( page ) {
-          page.onShow()
-        }
-      })
-    }
-  })
-}
-
-async function register(page) {
-  let _this = this;
-  wx.login({
-    success: function (res) {
-      let code = res.code; // 微信登录接口返回的 code 参数，下面注册接口需要用到
-      wx.getUserInfo({
-        success: function (res) {
-          let iv = res.iv;
-          let encryptedData = res.encryptedData;
-          let referrer = '' // 推荐人
-          let referrer_storge = wx.getStorageSync('referrer');
-          if (referrer_storge) {
-            referrer = referrer_storge;
+    let now = new Date().getTime();
+    let expires = app.expires ? app.expires : Number(wx.getStorageSync('expires'));
+    if (expires && app.userInfo && expires - 200000 > now) {
+      resolve(app.userInfo);
+    } else {
+      wx.getSetting({
+        success(setting) {
+          if (setting.authSetting["scope.userInfo"]) {
+            if (flag) {
+              showLoading('登录中...')
+            }
+            if (!app.userInfo) {
+              wx.login({
+                success(res) {
+                  wx.getUserInfo({
+                    success(res1) {
+                      let params = {
+                        code: res.code,
+                        encryptedData: res1.encryptedData,
+                        iv: res1.iv,
+                        appid: app.appid
+                      }
+                      api.login(params).then(res => {
+                        if (!res.error) {
+                          app.userInfo = res.data;
+                          app.expires = new Date().getTime() + 7200000;
+                          wx.setStorageSync('userInfo', res.data);
+                          wx.setStorageSync('expires', app.expires.toString());
+                          resolve(app.userInfo)
+                        } else {
+                          showModal('提示', res.msg);
+                          reject(res.msg)
+                        }
+                      }).catch(err => {
+                        showModal('提示', err);
+                        reject(err);
+                      })
+                    }
+                  })
+                }
+              })
+            } else {
+              let params = {
+                uid: app.userInfo.uid,
+                openid: app.userInfo.openid,
+                appid: app.appid
+              }
+              api.refreshToken(params).then(res => {
+                if (res.code === 8) {
+                  wx.setStorageSync('userInfo', '');
+                  wx.setStorageSync('expires', '');
+                  app.userInfo = '';
+                  app.expires = '';
+                  login(flag).then(userInfo => {
+                    resolve(userInfo)
+                  });
+                } else if (!res.error) {
+                  let userInfo = wx.getStorageSync('userInfo');
+                  userInfo.token = res.data.token;
+                  app.userInfo = userInfo;
+                  app.expires = now + 7200000;
+                  wx.setStorageSync('userInfo', app.userInfo);
+                  wx.setStorageSync('expires', app.expires.toString());
+                  getUserInfo(app.userInfo.openid).then(() => {
+                    resolve(app.userInfo);
+                  })
+                } else {
+                  showModal('提示', res.msg);
+                  reject(res.msg)
+                }
+              }).catch(err => {
+                showModal('提示', '服务器异常，请稍候再试');
+                reject(err)
+              })
+            }
           }
-          // 下面开始调用注册接口
-          WXAPI.register_complex({
-            code: code,
-            encryptedData: encryptedData,
-            iv: iv,
-            referrer: referrer
-          }).then(function (res) {
-            _this.login(page);
-          })
         }
       })
     }
   })
 }
-
+function getUserInfo(openid) {
+  let _this = this;
+  return new Promise((resolve, reject) => {
+    showLoading('加载中');
+    wx.request({
+      url: `${baseUrl}/bookCoin/userInfo`,
+      method: 'GET',
+      header: {
+        Authorization: app.userInfo.token
+      },
+      data: {
+        openid
+      },
+      success(res) {
+        if (res.data.error) {
+          showModal('出错了', res.data.msg);
+          return reject()
+        }
+        wx.setStorageSync('userDetails', res.data.data);
+        resolve(res.data.data)
+      },
+      fail() {
+        showModal('出错了', '获取信息失败');
+        reject()
+      },
+      complete() {
+        wx.hideLoading()
+      }
+    })
+  })
+}
 module.exports = {
-  checkHasLogined: checkHasLogined,
-  wxaCode: wxaCode,
-  getUserInfo: getUserInfo,
-  login: login,
-  register: register,
+  login,
+  showModal,
+  showLoading
 }

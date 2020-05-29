@@ -1,20 +1,13 @@
-<!--index.wxml-->
-<import src="../../common/pageStatus/index.wxml" />
-<block wx:if="{{ !isNetwork }}">
-  <template is="pageState" data="{{...pageState}}" />
+<block wx:if="{{ !isLoad }}">
+  <loading></loading>
 </block>
 <block wx:else>
-  <view class="container">
-    <view class="userinfo">
-      <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-      <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.userNickname}}</text>
-      </block>
+  <block wx:if="{{ isAuth }}">
+    <view class="ad-box">
     </view>
-    <view class="usermotto">
-      <text class="user-motto">{{motto}}</text>
-    </view>
-  </view>
+    <button bindtap="viewAd">查看广告</button>
+  </block>
+  <block wx:else>
+    <auditPage></auditPage>
+  </block>
 </block>
-

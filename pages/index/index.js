@@ -1,111 +1,112 @@
-//index.wxs
-//获取应用实例
+const app = getApp().globalData;
 import pageState from '../../common/pageStatus/index'
-const app = getApp();
-const api = require('../../api/home');
+import api from '../../api/login'
+const AUTH = require('../../utils/auth');
 Page({
   data: {
-    motto: 'Hello World',
     userInfo: {},
-    hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo'),
-    isNetwork: true,
-  },
-  //事件处理函数
-  bindViewTap: function() {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
+    isLoad: false,
+    isAuth: false
   },
   onLoad: function () {
-
-    this.getBanner();
-    console.log(app.globalData.userInfo)
-    this.getAppUserInfo();
-  },
-  onShow () {
-    this.setData({
-      isNetwork: wx.getStorageSync('networkStatus')
-    });
-    if (!this.data.isNetwork) {
-      const pageStates = pageState(this);
-      console.log(pageStates)
-      pageStates.error();
-    }
-  },
-  //  重新加载
-  onRetry () {
-    console.log(1)
-    app.onLaunch();
-    this.onLoad();
-    this.onShow();
-  },
-  getUserInfo (e) {
-    let that = this;
-    wx.login({
-      success: code => {
-        let params = {
-          code: code.code,
-          iv: e.detail.iv,
-          rawData: e.detail.rawData
-        };
-        api.getToken(params).then(res => {
-          wx.setStorageSync('Token', res.data);
-          api.getUserInfo().then(({ data }) => {
-            console.log(data)
-            app.globalData.userInfo = data
-            this.setData({
-              userInfo: data,
-              hasUserInfo: true
-            })
-          });
-          // app.globalData.userInfo = e.detail.userInfo
-          // this.setData({
-          //   userInfo: e.detail.userInfo,
-          //   hasUserInfo: true
-          // })
-        });
-      }
-    });
-  },
-  getAppUserInfo () {
-    if (app.globalData.userInfo) {
-      console.warn(1)
-      this.setData({
-        userInfo: app.globalData.userInfo,
-        hasUserInfo: true
-      })
-    } else if (this.data.canIUse){
-      console.warn(2)
-      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-      // 所以此处加入 callback 以防止这种情况
-      app.userInfoReadyCallback = res => {
-        console.log(res)
+    this.getIndexConfig().then(_ => {
+      if (app.audit) {
         this.setData({
-          userInfo: res,
-          hasUserInfo: true
+          isAuth: true
+        })
+        wx.setNavigationBarTitle({
+          title: '书币幸运奖'
+        });
+        AUTH.login().then(res => {
+         this.setData({
+           userInfo: res
+         })
+        }).finally(_ => {
+          this.setData({
+            isLoad: true
+          })
+        })
+      } else {
+        this.setData({
+          isAuth: false
+        })
+        wx.setNavigationBarTitle({
+          title: '趣味看图'
         })
       }
-    } else {
-      console.warn(3)
-      // 在没有 open-type=getUserInfo 版本的兼容处理
-      wx.getUserInfo({
-        success: res => {
-          app.globalData.userInfo = res.userInfo
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
+    })
+  },
+  //  首页配置
+  getIndexConfig () {
+    const that = this;
+    return new Promise((resolve, reject) => {
+      if (app.hasConfig) {
+        this.setData({
+          audit: app.audit,
+          advert: app.advert,
+        })
+      }
+      api.indexConfig({ appid: app.appid })
+        .then(res => {
+          let { advert, audit } = res.data;
+          app.advert = Number(advert);
+          app.audit = Number(audit);
+          app.hasConfig = 1;
+          that.setData({
+            audit: app.audit,
+            advert: app.advert,
+            hasConfig: 1
           })
-        }
+          resolve()
+        })
+        .catch(err => {
+          reject()
+        })
+    })
+  },
+  //  广告
+  viewAd () {
+    wx.showLoading({
+      title: '广告加载中',
+    })
+    // 在页面中定义激励视频广告
+    let videoAd = null
+    // 在页面onLoad回调事件中创建激励视频广告实例
+    if (wx.createRewardedVideoAd) {
+      videoAd = wx.createRewardedVideoAd({
+        adUnitId: 'adunit-4760875b27632196',
+        multiton: true
       })
     }
-  },
-  async getBanner () {
-    let that = this;
-    let params = {
-      positionValue: 1
-    };
-    let obj = await api.getBanner(params);
-    console.log(obj)
+    videoAd.load().catch(_ => {
+      wx.showToast({
+        title: '加载失败,请重试.',
+        icon: 'none'
+      })
+    }).finally(_ => {
+      wx.hideLoading()
+    })
+    videoAd.onError(err => {
+      wx.showToast({
+        title: '加载失败,请重试.',
+        icon: 'none'
+      })
+    })
+    videoAd.onClose(res => {
+      if (res && res.isEnded) {
+        // 正常播放结束，下发奖励
+        console.log(`正常播放完成.`)
+      }
+    })
+    // 用户触发广告后，显示激励视频广告
+    if (videoAd) {
+      videoAd.show().catch(_ => {
+          videoAd.load()
+            .then(() => videoAd.show())
+            .catch(err => {
+              console.log('激励视频 广告显示失败')
+            })
+        })
+    }
   }
 })

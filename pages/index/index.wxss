@@ -1,23 +1,228 @@
-.container {
-  text-align: center;
-}
-.container .userinfo {
+.my-bg {
+  min-height: 100vh;
+  background-image: url('http://qiniu.miniprogram.yayawx.cn/bookcoin/background.jpg');
+  background-size: 100% 100%;
   display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
+}
+.my-bg .my-user {
+  position: fixed;
+  left: 0;
+  top: 42px;
+  display: flex;
   align-items: center;
 }
-.container .userinfo .userinfo-avatar {
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
+.my-bg .my-user .user-avatar {
+  background-image: linear-gradient(#ffe635, #fd9d2c);
+  border-top-right-radius: 20000px;
+  border-bottom-right-radius: 20000px;
+  padding-left: 8.5px;
+  z-index: 10;
+}
+.my-bg .my-user .user-avatar .avatar {
+  width: 58.5px;
+  height: 58.5px;
+  border: 2px solid #ffd533;
+  border-radius: 50%;
+  display: block;
+  z-index: 11;
+}
+.my-bg .my-user .user-info-box .user-id {
+  position: relative;
+  width: 80%;
+  z-index: 5;
+  white-space: nowrap;
+  font-size: 9px;
+  color: #ea8f10;
+  line-height: 1.5;
+  left: -15px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: #fff;
+  border-top: 2px solid #ffd533;
+  border-right: 2px solid #ffd533;
+  border-top-right-radius: 2000px;
+  padding-left: 20px;
+}
+.my-bg .my-user .user-info-box .number {
+  position: relative;
+  display: flex;
+  align-items: center;
+  left: -20px;
+  height: 33px;
+  line-height: 33px;
+  padding: 0 20px;
+  background-image: linear-gradient(#ffe635, #fd9d2c);
+  border-top-right-radius: 2000px;
+  border-bottom-right-radius: 2000px;
+  box-sizing: border-box;
+}
+.my-bg .my-user .user-info-box .number-label {
+  font-size: 14px;
+  color: #fff;
+  line-height: 1;
+}
+.my-bg .my-user .user-info-box .number-val {
+  color: #eb003e;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: bold;
+}
+.my-bg .my-user .user-info-box .number .number-icon {
+  width: 17px;
+  height: 14px;
+  display: inline-block;
+  padding: 0 3px 0 4px;
+}
+.my-bg .collar {
+  position: fixed;
+  background-color: red;
+  line-height: 2.5;
+  border-radius: 2000px;
+  padding: 0 20rpx;
+  font-size: 16px;
+  background-image: linear-gradient(to right, #f43d6f, #f55e87, #f04674);
+  box-shadow: 0 15rpx 49rpx #5520ba;
+  color: #fff;
+  animation: scaleDraw 1s linear infinite;
+}
+.my-bg .content {
+  padding-top: 40rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.my-bg .content .content-text {
+  width: 100%;
+  height: 96rpx;
+  display: block;
+  margin-bottom: 10rpx;
+}
+.my-bg .content .lunpan-box {
+  position: relative;
+}
+.my-bg .content .lunpan-box .lunpan {
+  width: 664rpx;
+  height: 664rpx;
+  background-image: url("http://qiniu.miniprogram.yayawx.cn/bookcoin/dist_flash.gif");
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: relative;
+  z-index: 2;
+}
+.my-bg .content .lunpan-box .lunpan .turntable {
+  width: 560rpx;
+  height: 560rpx;
+  display: block;
+  position: absolute;
+  top: 52rpx;
+  left: 52rpx;
+  z-index: 5;
+}
+.my-bg .content .lunpan-box .lunpan .pointer {
+  width: 153rpx;
+  height: 217rpx;
+  position: absolute;
+  z-index: 10;
+  top: 223.5rpx;
+  left: 255.5rpx;
+}
+.my-bg .content .lunpan-box .lunpan .pointer.disabled {
+  pointer-events: none;
+  filter: grayscale(50%);
+  color: #ccc;
+}
+.my-bg .content .lunpan-box .lunpan .pointer.disabled:after {
+  border-bottom-color: #b07a7b;
+}
+.my-bg .content .lunpan-box .lunpan .shou {
+  width: 125rpx;
+  height: 124rpx;
+  display: inline-block;
+  position: absolute;
+  top: 370rpx;
+  left: 340rpx;
+  z-index: 200;
+}
+.my-bg .content .lunpan-box .tip {
+  position: absolute;
+  width: 170rpx;
+  height: 140rpx;
+  top: -50rpx;
+  left: -30rpx;
+}
+.my-bg .content .lunpan-box .shabox {
+  position: absolute;
+  bottom: -25rpx;
+  left: 50%;
+  transform: rotateX(50deg) translateX(-50%);
+  width: 50%;
+  height: 50rpx;
+  background-color: rgba(0, 0, 0, 0.5);
+  filter: blur(15px);
   border-radius: 50%;
 }
-.container .userinfo .userinfo-nickname {
-  color: #aaa;
+.my-bg .content .lunpan-box .annal {
+  position: absolute;
+  right: -42rpx;
+  color: #fff;
+  top: 0;
+  background-color: transparent;
+  line-height: 2;
+  border: 2rpx solid #fff;
+  border-right: 0;
+  font-size: 28rpx;
+  border-top-left-radius: 2000px;
+  border-bottom-left-radius: 2000px;
+  padding: 0 20rpx 0 20rpx;
+  z-index: 10;
 }
-.container .usermotto {
-  margin-top: 200px;
+.my-bg .content .text {
+  font-size: 30rpx;
+  color: #ffdf10;
+  text-align: center;
+  padding: 0;
+  margin-bottom: 10rpx;
 }
-.container .text {
-  width: 100px;
+.my-bg .content .surplus {
+  background-image: linear-gradient(to bottom right, #ffe635, #fd9d2c);
+  box-shadow: 0 4rpx 18rpx #c91a4a;
+  border-radius: 2000px;
+  line-height: 2;
+  padding: 0 20rpx;
+  font-size: 30rpx;
+  color: #fff;
+  margin-top: 10rpx;
+  margin-bottom: 10rpx;
+}
+.my-bg .content .srcoll_view-box {
+  width: 575rpx;
+  height: 40rpx;
+  overflow: hidden;
+}
+.my-bg .content .srcoll_view-box .srcoll_view {
+  width: 100%;
+  height: 40rpx;
+  font-size: 30rpx;
+  white-space: nowrap;
+  line-height: 40rpx;
+  color: #00bff3;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 10%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.05) 95%, rgba(0, 0, 0, 0) 100%);
+  overflow: hidden;
+}
+.my-bg .content .srcoll_view-box .srcoll_view .scroll_view_border {
+  width: 100%;
+  white-space: nowrap;
+  height: 40rpx;
+  font-size: 36rpx;
+  color: #fff;
+  animation: myfirst 20s linear infinite;
+  color: rgba(255, 255, 255, 0.85);
+}
+.ad-box {
+  position: fixed;
+  bottom: 0;
 }

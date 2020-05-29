@@ -1,3 +1,8 @@
 {
-  "enablePullDownRefresh": false
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "auditPage": "/components/auditPage/index",
+    "loading": "/components/loading/index"
+  },
+  "navigationStyle": "custom"
 }

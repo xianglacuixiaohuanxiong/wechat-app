@@ -17,8 +17,3 @@
 .page-state-container~view {
   display: none;
 }
-
-page {
-  height: 100%;
-  overflow-y: auto;
-}

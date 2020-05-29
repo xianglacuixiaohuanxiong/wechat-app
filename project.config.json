@@ -17,9 +17,11 @@
 		"es6": true,
 		"enhance": true,
 		"postcss": true,
+		"preloadBackgroundData": false,
 		"minified": true,
 		"newFeature": true,
 		"coverView": true,
+		"nodeModules": true,
 		"autoAudits": false,
 		"showShadowRootInWxmlPanel": true,
 		"scopeDataCheck": false,
@@ -30,11 +32,13 @@
 			"ignore": [],
 			"disablePlugins": [],
 			"outputPath": ""
-		}
+		},
+		"useCompilerModule": false,
+		"userConfirmedUseCompilerModuleSwitch": false
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.10.0",
-	"appid": "wxc6e4103c720b2405",
+	"appid": "wx5fadfde3504664de",
 	"projectname": "%E9%A6%99%E8%BE%A3%E8%84%86%E5%B0%8F%E6%B5%A3%E7%86%8A",
 	"debugOptions": {
 		"hidedInDevtools": []

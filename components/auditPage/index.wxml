@@ -1,0 +1,6 @@
+<view class="auditPage">
+  <view class="bg">
+    <image class="pointer" src="../../assets/img/pointer.png" bindtap="randomLottery" />
+    <image animation="{{ animationData }}" class="turntable" src="../../assets/img/turntable.png" />
+  </view>
+</view>
