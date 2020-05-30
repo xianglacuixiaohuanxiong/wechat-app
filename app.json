@@ -1,5 +1,6 @@
 {
   "pages": [
+    "components/page/cascader/cascader",
     "pages/index/index",
     "pages/test/test",
     "pages/logs/logs"

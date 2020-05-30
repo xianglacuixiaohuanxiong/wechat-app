@@ -1,0 +1,68 @@
+.my-casecader {
+  min-height: 100vh;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+}
+.my-casecader .casecader .back {
+  padding: 10px;
+  text-align: center;
+  background-color: transparent;
+}
+.my-casecader .casecader .back .btn {
+  height: auto;
+  padding: 10px;
+  line-height: 1;
+  color: #fff;
+  font-size: 14px;
+  background-color: #00bff3;
+}
+.my-casecader .casecader .select-content-body {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 10px 0;
+  background-color: #fff;
+}
+.my-casecader .casecader .select-content-body .select-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f2f5;
+}
+.my-casecader .casecader .select-content-body .select-list:last-child {
+  border-bottom: none;
+}
+.my-casecader .casecader .select-content-body .select-list .select-list-head {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+.my-casecader .casecader .select-content-body .select-list .children {
+  display: flex;
+  align-items: center;
+}
+.my-casecader .casecader .select-content-body .select-list .children .infoStyle {
+  transform: rotate(90deg);
+}
+.my-casecader .footer {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  height: 50px;
+  background-color: #fff;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.my-casecader .footer .text {
+  color: #000000;
+}
+.my-casecader .footer .btn {
+  padding: 5px 10px;
+  height: auto;
+  font-size: 16px;
+  line-height: 1;
+}

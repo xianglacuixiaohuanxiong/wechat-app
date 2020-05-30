@@ -1,0 +1,29 @@
+<view class="my-casecader">
+  <view class="casecader">
+    <view class="back">
+      <button class="btn" bindtap="back" disabled="{{ currentIndex === 0 ? true : false }}" >返回上一层</button>
+    </view>
+    <radio-group class="radio-group" onChange="radioChange">
+      <scroll-view scroll-y="true" class="select-content-body">
+        <block wx:for="{{ list }}">
+          <view class="select-list">
+            <label class="select-list-head">
+              <radio value="{{ item }}" checked="{{ currentItem.id === item.id }}" />
+              <view class="content-item" data-item="{{ item }}">{{item.name}}</view>
+            </label>
+            <block wx:if="{{ item.children.length }}">
+              <view class="children" bindtap="scrollNext" data-item="{{ item }}">
+                <text class="iconfont icon-arrow-right infoStyle"></text>
+                <text>下级</text>
+              </view>
+            </block>
+          </view>
+        </block>
+      </scroll-view>
+    </radio-group>
+  </view>
+  <view class="footer">
+    <text class="text">当前选中: {{ currentItem.name }}</text>
+    <button class="btn" onTap="submit">确定</button>
+  </view>
+</view>
