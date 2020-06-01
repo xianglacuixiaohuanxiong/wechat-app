@@ -15,7 +15,3 @@ thirdScriptError
 ##  注意事项
 1. .less文件不会上传,.less文件自动编译为wxss(使用less需要配置相应的自动编译).
 2. local.text文件是用于区分开发环境与生产环境,上传时不会上传.
-
-```javascript
-document.getElementById("ts").innerHTML="Hello"
-```
